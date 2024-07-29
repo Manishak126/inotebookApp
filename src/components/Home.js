@@ -4,7 +4,7 @@ import Notes from './Notes'
 // import { useEffect } from 'react';
 
 
-const Home = () => {
+const Home = (props) => {
 
     //  const a = useContext(NoteContext);
     //  useEffect(()=>{
@@ -12,13 +12,13 @@ const Home = () => {
     //    // eslint-disable-next-line
     //  },[])
 
-  
+  const {showAlert} = props;
   return (
     <div>
       {/* {a.state.name} is from {a.state.class} */}
      
    
-    <Notes/>
+    <Notes showAlert={showAlert}/>
     </div>
   );
 }
