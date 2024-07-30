@@ -9,44 +9,45 @@ const NoteState=(props)=>{
 
 // Get all Notes
 const getNotes = async () => {
+  const token = localStorage.getItem("token");
+  console.log("Token: ", token); // Log the token for debugging
+  if (!token) {
+    console.error("No token found");
+    return;
+  }
   try{
       // API Call
     const response = await fetch(`${host}/api/notes/fetchallnotes`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem('token')
-        "auth-token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY4NDU5ZmZiOTJkNDdkZWY1NTFjMjI4In0sImlhdCI6MTcyMDAwMDI3Mn0.z_eQ1dfWV1WExFKtR1gyIDCNDo_ATPGehP20kb55CyE"
+        "auth-token": token
       },
     });
 
     const json=await response.json()
-    // console.log(json)
-    // setNotes(json)
-     setNotes(Array.isArray(json) ? json : []);
+    console.log("Fetched Notes: ", json);
+    if (response.ok) {
+      setNotes(Array.isArray(json) ? json : []);
+    } else {
+      console.error("Failed to fetch notes", json);
+    }
      }catch(error){
       console.error("Error fetching notes", error)
      }
-    // if (Array.isArray(json)) {
-    //   setNotes(json);
-    // } else {
-    //   console.error("API response is not an array", json);
-    //   setNotes([]);
-    // }
 };
 
 
 // Add a Note
 const addNote=async (title, description, tag)=>{
   try {
+    const token = localStorage.getItem("token");
     // API Call
     const response = await fetch(`${host}/api/notes/addnotes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem("token"),
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY4NDU5ZmZiOTJkNDdkZWY1NTFjMjI4In0sImlhdCI6MTcyMDAwMDI3Mn0.z_eQ1dfWV1WExFKtR1gyIDCNDo_ATPGehP20kb55CyE",
+        "auth-token": token,
       },
       body: JSON.stringify({ title, description, tag }),
     });
@@ -61,21 +62,19 @@ const addNote=async (title, description, tag)=>{
 // Delete a Note
 const deleteNote=async (id)=>{
   try {
+    const token = localStorage.getItem("token");
     //API call
     const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem("token"),
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY4NDU5ZmZiOTJkNDdkZWY1NTFjMjI4In0sImlhdCI6MTcyMDAwMDI3Mn0.z_eQ1dfWV1WExFKtR1gyIDCNDo_ATPGehP20kb55CyE",
+        "auth-token": token,
       },
     });
-    const json = response.json();
+    const json =await response.json();
     console.log(json);
 
     console.log("Deleting Note with id:" + id);
-    // const newNotes=notes.filter((note)=>{return note._id!==id})
     const newNotes = notes.filter((note) => note._id !== id);
     setNotes(newNotes);
   } catch (error) {
@@ -86,14 +85,13 @@ const deleteNote=async (id)=>{
 // Edit a Note
 const editNote=async (id, title, description, tag )=>{
   try {
+    const token = localStorage.getItem("token");
     // API Call
     const response = await fetch(`${host}/api/notes/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        // "auth-token": localStorage.getItem("token"),
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY4NDU5ZmZiOTJkNDdkZWY1NTFjMjI4In0sImlhdCI6MTcyMDAwMDI3Mn0.z_eQ1dfWV1WExFKtR1gyIDCNDo_ATPGehP20kb55CyE",
+        "auth-token": token,
       },
       body: JSON.stringify({ title, description, tag }),
     });
